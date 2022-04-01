@@ -13,7 +13,7 @@ def statement(invoice, plays):
     result = f'Statement for {invoice["customer"]}\n'
 
     for perf in invoice["performances"]:
-        play = plays[perf["playID"]]
+        play = play_for(perf, plays)
         this_amount = amount_for(perf, play)
 
         # add volume cradits
@@ -31,6 +31,10 @@ def statement(invoice, plays):
     result += f'You earned {volume_credits} credits\n'
 
     return result
+
+
+def play_for(perf, plays):
+    return plays[perf["playID"]]
 
 
 def amount_for(a_performance, play):
