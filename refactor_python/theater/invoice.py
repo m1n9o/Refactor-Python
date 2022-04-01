@@ -14,17 +14,7 @@ def statement(invoice, plays):
 
     for perf in invoice["performances"]:
         play = plays[perf["playID"]]
-        if play["type"] == "tragedy":
-            this_amount = 40000
-            if perf["audience"] > 30:
-                this_amount += 1000 * (perf["audience"] - 30)
-        elif play["type"] == "comedy":
-            this_amount = 30000
-            if perf["audience"] > 20:
-                this_amount += 10000 + 500 * (perf["audience"] - 20)
-            this_amount += 300 * perf["audience"]
-        else:
-            raise ValueError(f'unknown type: {play["type"]}')
+        this_amount = amount_for(perf, play)
 
         # add volume cradits
         volume_credits += max(perf["audience"] - 30, 0)
@@ -41,6 +31,21 @@ def statement(invoice, plays):
     result += f'You earned {volume_credits} credits\n'
 
     return result
+
+
+def amount_for(perf, play):
+    if play["type"] == "tragedy":
+        this_amount = 40000
+        if perf["audience"] > 30:
+            this_amount += 1000 * (perf["audience"] - 30)
+    elif play["type"] == "comedy":
+        this_amount = 30000
+        if perf["audience"] > 20:
+            this_amount += 10000 + 500 * (perf["audience"] - 20)
+        this_amount += 300 * perf["audience"]
+    else:
+        raise ValueError(f'unknown type: {play["type"]}')
+    return this_amount
 
 
 if __name__ == '__main__':
