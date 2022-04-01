@@ -13,20 +13,18 @@ def statement(invoice, plays):
     for perf in invoice["performances"]:
         result += f'\t{play_for(perf, plays)["name"]}: {amount_for(perf, play_for(perf, plays)) / 100} ({perf["audience"]} seats)\n'
 
-    total_amount = apply_sauce(invoice, plays)
-
-    result += f'Amount owed is {total_amount / 100}\n'
+    result += f'Amount owed is {total_amount(invoice, plays) / 100}\n'
     result += f'You earned {total_volume_credits(invoice, plays)} credits\n'
 
     return result
 
 
-def apply_sauce(invoice, plays):
-    total_amount = 0
+def total_amount(invoice, plays):
+    result = 0
     for perf in invoice["performances"]:
         # print line for this order
-        total_amount += amount_for(perf, play_for(perf, plays))
-    return total_amount
+        result += amount_for(perf, play_for(perf, plays))
+    return result
 
 
 def total_volume_credits(invoice, plays):
