@@ -9,20 +9,25 @@ def get_data(filename: str) -> dict:
 
 def statement(invoice, plays):
     total_amount = 0
-    volume_credits = 0
     result = f'Statement for {invoice["customer"]}\n'
 
     for perf in invoice["performances"]:
-        volume_credits = volume_credits_for(perf, plays, volume_credits)
 
         # print line for this order
         result += f'\t{play_for(perf, plays)["name"]}: {amount_for(perf, play_for(perf, plays)) / 100} ({perf["audience"]} seats)\n'
         total_amount += amount_for(perf, play_for(perf, plays))
 
     result += f'Amount owed is {total_amount / 100}\n'
-    result += f'You earned {volume_credits} credits\n'
+    result += f'You earned {total_volume_credits(invoice, plays)} credits\n'
 
     return result
+
+
+def total_volume_credits(invoice, plays):
+    volume_credits = 0
+    for perf in invoice["performances"]:
+        volume_credits = volume_credits_for(perf, plays, volume_credits)
+    return volume_credits
 
 
 def volume_credits_for(a_performance, plays, volume_credits):
