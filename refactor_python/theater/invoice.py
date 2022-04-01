@@ -8,10 +8,11 @@ def get_data(filename: str) -> dict:
 
 
 def statement(invoice, plays):
-    return render_plain_text(invoice, plays)
+    statement_data = {}
+    return render_plain_text(statement_data, invoice, plays)
 
 
-def render_plain_text(invoice, plays):
+def render_plain_text(data, invoice, plays):
     result = f'Statement for {invoice["customer"]}\n'
     for perf in invoice["performances"]:
         result += f'\t{play_for(perf, plays)["name"]}: {amount_for(perf, play_for(perf, plays)) / 100} ({perf["audience"]} seats)\n'
