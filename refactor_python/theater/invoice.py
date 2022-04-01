@@ -25,10 +25,10 @@ def statement(invoice, plays):
     return result
 
 
-def volume_credits_for(perf, plays, volume_credits):
-    volume_credits += max(perf["audience"] - 30, 0)
-    if "comedy" == play_for(perf, plays)["type"]:
-        volume_credits += perf["audience"] // 5
+def volume_credits_for(a_performance, plays, volume_credits):
+    volume_credits += max(a_performance["audience"] - 30, 0)
+    if "comedy" == play_for(a_performance, plays)["type"]:
+        volume_credits += a_performance["audience"] // 5
     return volume_credits
 
 
