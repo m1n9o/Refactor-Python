@@ -23,17 +23,16 @@ def render_plain_text(data, plays):
     return result
 
 
-def total_amount(invoice, plays):
+def total_amount(data, plays):
     result = 0
-    for perf in invoice["performances"]:
-        # print line for this order
+    for perf in data["performances"]:
         result += amount_for(perf, play_for(perf, plays))
     return result
 
 
-def total_volume_credits(invoice, plays):
+def total_volume_credits(data, plays):
     volume_credits = 0
-    for perf in invoice["performances"]:
+    for perf in data["performances"]:
         volume_credits = volume_credits_for(perf, plays, volume_credits)
     return volume_credits
 
