@@ -13,12 +13,7 @@ def statement(invoice, plays):
     result = f'Statement for {invoice["customer"]}\n'
 
     for perf in invoice["performances"]:
-        # add volume cradits
-        volume_credits += max(perf["audience"] - 30, 0)
-
-        # add extra credit for every ten comedy attendees
-        if "comedy" == play_for(perf, plays)["type"]:
-            volume_credits += perf["audience"] // 5
+        volume_credits = volume_credits_for(perf, plays, volume_credits)
 
         # print line for this order
         result += f'\t{play_for(perf, plays)["name"]}: {amount_for(perf, play_for(perf, plays)) / 100} ({perf["audience"]} seats)\n'
@@ -28,6 +23,13 @@ def statement(invoice, plays):
     result += f'You earned {volume_credits} credits\n'
 
     return result
+
+
+def volume_credits_for(perf, plays, volume_credits):
+    volume_credits += max(perf["audience"] - 30, 0)
+    if "comedy" == play_for(perf, plays)["type"]:
+        volume_credits += perf["audience"] // 5
+    return volume_credits
 
 
 def play_for(perf, plays):
