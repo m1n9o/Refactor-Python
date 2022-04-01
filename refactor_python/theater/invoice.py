@@ -1,17 +1,37 @@
 import json
 
 
+def play_for(perf, plays):
+    return plays[perf["playID"]]
+
+
+def statement(invoice, plays):
+    statement_data = {"customer": invoice["customer"],
+                      "performances": invoice["performances"]
+                      }
+    statement_data["total_amount"] = total_amount(statement_data, plays)
+    statement_data["total_volume_credits"] = total_volume_credits(statement_data, plays)
+    return render_plain_text(statement_data, plays)
+
+
+def total_volume_credits(data, plays):
+    volume_credits = 0
+    for perf in data["performances"]:
+        volume_credits = volume_credits_for(perf, plays, volume_credits)
+    return volume_credits
+
+
+def total_amount(data, plays):
+    result = 0
+    for perf in data["performances"]:
+        result += amount_for(perf, play_for(perf, plays))
+    return result
+
+
 def get_data(filename: str) -> dict:
     with open(filename, mode='r', encoding='utf8') as file:
         data = json.load(file)
     return data
-
-
-def statement(invoice, plays):
-    statement_data = {}
-    statement_data["customer"] = invoice["customer"]
-    statement_data["performances"] = invoice["performances"]
-    return render_plain_text(statement_data, plays)
 
 
 def render_plain_text(data, plays):
@@ -23,29 +43,11 @@ def render_plain_text(data, plays):
     return result
 
 
-def total_amount(data, plays):
-    result = 0
-    for perf in data["performances"]:
-        result += amount_for(perf, play_for(perf, plays))
-    return result
-
-
-def total_volume_credits(data, plays):
-    volume_credits = 0
-    for perf in data["performances"]:
-        volume_credits = volume_credits_for(perf, plays, volume_credits)
-    return volume_credits
-
-
 def volume_credits_for(a_performance, plays, volume_credits):
     volume_credits += max(a_performance["audience"] - 30, 0)
     if "comedy" == play_for(a_performance, plays)["type"]:
         volume_credits += a_performance["audience"] // 5
     return volume_credits
-
-
-def play_for(perf, plays):
-    return plays[perf["playID"]]
 
 
 def amount_for(a_performance, play):
