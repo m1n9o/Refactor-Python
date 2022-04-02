@@ -6,12 +6,17 @@ def play_for(perf, plays):
 
 
 def statement(invoice, plays):
-    statement_data = {"customer": invoice["customer"],
-                      "performances": invoice["performances"]
-                      }
+    return render_plain_text(create_statement_data(invoice, plays), plays)
+
+
+def create_statement_data(invoice, plays):
+    statement_data = {
+        "customer": invoice["customer"],
+        "performances": invoice["performances"]
+    }
     statement_data["total_amount"] = total_amount(statement_data, plays)
     statement_data["total_volume_credits"] = total_volume_credits(statement_data, plays)
-    return render_plain_text(statement_data, plays)
+    return statement_data
 
 
 def total_volume_credits(data, plays):
