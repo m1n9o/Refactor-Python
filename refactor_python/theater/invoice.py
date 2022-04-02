@@ -5,6 +5,33 @@ def play_for(perf, plays):
     return plays[perf["playID"]]
 
 
+def render_plain_text(data, plays):
+    result = f'Statement for {data["customer"]}\n'
+    for perf in data["performances"]:
+        result += f'\t{play_for(perf, plays)["name"]}: {amount_for(perf, play_for(perf, plays)) / 100} ({perf["audience"]} seats)\n'
+    result += f'Amount owed is {total_amount(data, plays) / 100}\n'
+    result += f'You earned {total_volume_credits(data, plays)} credits\n'
+    return result
+
+
+def html_statement(invoice, plays):
+    return render_html(create_statement_data(invoice, plays), plays)
+
+
+def render_html(data, plays):
+    result = f'<h1>Statement for {data["customer"]}</h1>\n'
+    result += "<table>\n"
+    result += "<tr><th>play</th><th>seats</th><th>cost</th></tr>"
+
+    for perf in data["performances"]:
+        result += f'<tr> <td> {play_for(perf, plays)["name"]} </td><td> {perf["audience"]} </td>'
+        result += f'<td>${amount_for(perf, play_for(perf, plays)) / 100}</td></tr>\n'
+    result += "</table>\n"
+    result += f'<p>Amount owed is <em>{total_amount(data, plays) / 100}</em></p>\n'
+    result += f'<p>You earned <em>${total_volume_credits(data, plays)}</em> credits</p>\n'
+    return result
+
+
 def statement(invoice, plays):
     return render_plain_text(create_statement_data(invoice, plays), plays)
 
@@ -37,15 +64,6 @@ def get_data(filename: str) -> dict:
     with open(filename, mode='r', encoding='utf8') as file:
         data = json.load(file)
     return data
-
-
-def render_plain_text(data, plays):
-    result = f'Statement for {data["customer"]}\n'
-    for perf in data["performances"]:
-        result += f'\t{play_for(perf, plays)["name"]}: {amount_for(perf, play_for(perf, plays)) / 100} ({perf["audience"]} seats)\n'
-    result += f'Amount owed is {total_amount(data, plays) / 100}\n'
-    result += f'You earned {total_volume_credits(data, plays)} credits\n'
-    return result
 
 
 def volume_credits_for(a_performance, plays, volume_credits):
